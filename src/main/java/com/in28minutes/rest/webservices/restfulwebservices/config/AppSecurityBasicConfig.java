@@ -1,8 +1,6 @@
 package com.in28minutes.rest.webservices.restfulwebservices.config;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -12,9 +10,8 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-@Configuration
+//@Configuration
 public class AppSecurityBasicConfig
 {
 
@@ -47,8 +44,6 @@ public class AppSecurityBasicConfig
     public SecurityFilterChain filterChainBasic(HttpSecurity http) throws Exception
     {
 
-        // Response to preflight request doesn't pass access control check
-
         // @formatter:off
         return
         http.authorizeHttpRequests(auth -> 
@@ -56,11 +51,11 @@ public class AppSecurityBasicConfig
                                         // Response to preflight request doesn't pass access control check
                                         .requestMatchers(new OptionsRequestMatcher("/**")).permitAll()
                                         .anyRequest().authenticated()) // Authenticate all requests
-                .httpBasic(Customizer.withDefaults())// with basic Authentication
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))// stateless
-                                                                                                             // session
-                .csrf(csrf -> csrf.disable())// disable csrf
-                .build();
+             .httpBasic(Customizer.withDefaults())// with basic Authentication
+             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))// stateless
+                                                                                                          // session
+             .csrf(csrf -> csrf.disable())// disable csrf
+             .build();
 
         // @formatter:on
     }
