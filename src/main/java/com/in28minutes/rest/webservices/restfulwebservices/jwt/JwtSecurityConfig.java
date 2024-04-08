@@ -54,7 +54,7 @@ public class JwtSecurityConfig
                 .authorizeHttpRequests(auth -> auth
                                                .requestMatchers(new AntPathRequestMatcher("/authenticate")).permitAll()
                                                //h2-console is a servlet and NOT recommended for a production
-                                               .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll() 
+                                               //.requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll() 
                                                  // Response to preflight request doesn't pass access control check
                                                .requestMatchers(new OptionsRequestMatcher("/**")).permitAll()
                                                .anyRequest().authenticated())

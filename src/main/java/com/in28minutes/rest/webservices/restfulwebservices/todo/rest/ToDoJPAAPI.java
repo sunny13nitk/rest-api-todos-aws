@@ -28,19 +28,19 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.in28minutes.rest.webservices.restfulwebservices.exceptions.ToDoNotFoundException4User;
 import com.in28minutes.rest.webservices.restfulwebservices.todo.Todo;
-import com.in28minutes.rest.webservices.restfulwebservices.todo.srv.intf.TodoService;
+import com.in28minutes.rest.webservices.restfulwebservices.todo.repo.ToDoRepository;
 
 import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-//@RestController
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
 
-public class ToDoAPI
+public class ToDoJPAAPI
 {
-    private final TodoService todoSrv;
+    private final ToDoRepository todoSrv;
 
     private static final String relUserTodos = "allToDos for User";
 
@@ -53,7 +53,7 @@ public class ToDoAPI
 
         if (StringUtils.hasText(userName))
         {
-            todosList = todoSrv.findByUsername(userName);
+            todosList = todoSrv.findAllByUsername(userName);
             if (!CollectionUtils.isEmpty(todosList))
             {
                 todos = new ArrayList<EntityModel<Todo>>();
@@ -87,7 +87,7 @@ public class ToDoAPI
 
         if (StringUtils.hasText(userName))
         {
-            todosList = todoSrv.findByUsername(userName);
+            todosList = todoSrv.findAllByUsername(userName);
         }
         return todosList;
 
@@ -159,7 +159,8 @@ public class ToDoAPI
         HttpHeaders headers = null;
 
         // SAve the Entity
-        Todo newToDo = todoSrv.addTodo(userName, todo.getDescription(), todo.getTargetDate(), todo.isDone());
+        Todo todoPojo = new Todo(userName, todo.getDescription(), todo.getTargetDate(), todo.isDone());
+        Todo newToDo = todoSrv.save(todoPojo);
         if (newToDo != null)
         {
             eM = EntityModel.of(newToDo);
@@ -189,7 +190,7 @@ public class ToDoAPI
 
         if (todo != null)
         {
-            todoSrv.updateTodo(todo);
+            todoSrv.save(todo);
 
             eM = EntityModel.of(todo);
 
@@ -200,8 +201,8 @@ public class ToDoAPI
             headers = new HttpHeaders();
 
             // Set Header location using current Path
-            URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                    .buildAndExpand(todo.getId()).toUri();
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(todo.getId())
+                    .toUri();
             headers.setLocation(location);
         }
 
