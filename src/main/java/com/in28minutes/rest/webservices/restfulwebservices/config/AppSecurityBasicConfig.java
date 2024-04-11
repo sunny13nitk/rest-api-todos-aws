@@ -55,6 +55,7 @@ public class AppSecurityBasicConfig
              .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))// stateless
                                                                                                           // session
              .csrf(csrf -> csrf.disable())// disable csrf
+             .headers(head -> head.frameOptions().sameOrigin())
              .build();
 
         // @formatter:on

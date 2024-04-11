@@ -8,28 +8,30 @@ import java.util.UUID;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.in28minutes.rest.webservices.restfulwebservices.config.OptionsRequestMatcher;
+import com.in28minutes.rest.webservices.restfulwebservices.users.srv.UserDetailsServiceImpl;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -43,8 +45,7 @@ public class JwtSecurityConfig
 {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity)
-            throws Exception
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception
     {
 
         // @formatter:off
@@ -53,6 +54,7 @@ public class JwtSecurityConfig
         return httpSecurity
                 .authorizeHttpRequests(auth -> auth
                                                .requestMatchers(new AntPathRequestMatcher("/authenticate")).permitAll()
+                                               .requestMatchers(new AntPathRequestMatcher("/auth/addNewUser")).permitAll()
                                                //h2-console is a servlet and NOT recommended for a production
                                                //.requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll() 
                                                  // Response to preflight request doesn't pass access control check
@@ -69,20 +71,52 @@ public class JwtSecurityConfig
                 // @formatter:on
     }
 
+    // @Bean
+    // public AuthenticationManager authenticationManager(UserDetailsService
+    // userDetailsService)
+    // {
+    // var authenticationProvider = new DaoAuthenticationProvider();
+    // authenticationProvider.setUserDetailsService(userDetailsService);
+    // return new ProviderManager(authenticationProvider);
+    // }
+
+    // @Bean
+    // public UserDetailsService userDetailsService()
+    // {
+    // UserDetails user =
+    // User.withUsername("sunny").password("{noop}dummy").authorities("read").roles("USER").build();
+
+    // return new InMemoryUserDetailsManager(user);
+    // }
+
+    // User Creation
     @Bean
-    public AuthenticationManager authenticationManager(UserDetailsService userDetailsService)
+    @Primary
+    public UserDetailsService userDetailsService()
     {
-        var authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setUserDetailsService(userDetailsService);
-        return new ProviderManager(authenticationProvider);
+        return new UserDetailsServiceImpl();
+    }
+
+    // Password Encoding
+    @Bean
+    public PasswordEncoder passwordEncoder()
+    {
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public UserDetailsService userDetailsService()
+    public AuthenticationProvider authenticationProvider()
     {
-        UserDetails user = User.withUsername("sunny").password("{noop}dummy").authorities("read").roles("USER").build();
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(userDetailsService());
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        return authenticationProvider;
+    }
 
-        return new InMemoryUserDetailsManager(user);
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception
+    {
+        return config.getAuthenticationManager();
     }
 
     @Bean
