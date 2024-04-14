@@ -56,6 +56,14 @@ public class JwtSecurityConfig
         // @formatter:off
         // h2-console is a servlet
         // https://github.com/spring-projects/spring-security/issues/12310
+        /*
+         * In this examplw we would be using Oauth2 JWT based Asymmetric Encrption RSA256 based authentication
+         * WE would be configuring 2 Authorization providers to illustrate multiple Authorization Sources
+         *  to authorize Security Filter Chain
+         *  - DAO based MySql Auth provider
+         *  - Custom Auth provider 
+         * - Authorize /authorize url is exposed to generate the bearer token(s) which could be used in subsequent REST Calls 
+         */
         return httpSecurity
                 .authorizeHttpRequests(auth -> auth
                                                .requestMatchers(new AntPathRequestMatcher("/authenticate")).permitAll()
@@ -76,24 +84,6 @@ public class JwtSecurityConfig
 
                 // @formatter:on
     }
-
-    // @Bean
-    // public AuthenticationManager authenticationManager(UserDetailsService
-    // userDetailsService)
-    // {
-    // var authenticationProvider = new DaoAuthenticationProvider();
-    // authenticationProvider.setUserDetailsService(userDetailsService);
-    // return new ProviderManager(authenticationProvider);
-    // }
-
-    // @Bean
-    // public UserDetailsService userDetailsService()
-    // {
-    // UserDetails user =
-    // User.withUsername("sunny").password("{noop}dummy").authorities("read").roles("USER").build();
-
-    // return new InMemoryUserDetailsManager(user);
-    // }
 
     // User Creation
     @Bean
