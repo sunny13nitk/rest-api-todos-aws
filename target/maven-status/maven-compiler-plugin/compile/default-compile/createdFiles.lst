@@ -1,12 +1,14 @@
 com\in28minutes\rest\webservices\restfulwebservices\jwt\JwtTokenResponse.class
 com\in28minutes\rest\webservices\restfulwebservices\jwt\JwtTokenRequest.class
 com\in28minutes\rest\webservices\restfulwebservices\users\rest\UserProvisioningController.class
+com\in28minutes\rest\webservices\restfulwebservices\customAuth\CustomAuthenticationProvider.class
 com\in28minutes\rest\webservices\restfulwebservices\exceptions\UserNotFoundException.class
 com\in28minutes\rest\webservices\restfulwebservices\RestfulWebServicesApplication.class
 com\in28minutes\rest\webservices\restfulwebservices\users\repo\UserRepository.class
 com\in28minutes\rest\webservices\restfulwebservices\jwt\JwtSecurityConfig.class
 com\in28minutes\rest\webservices\restfulwebservices\jwt\JwtTokenService.class
 com\in28minutes\rest\webservices\restfulwebservices\todo\rest\ToDoJPAAPI.class
+com\in28minutes\rest\webservices\restfulwebservices\users\srv\UserDetailsServiceImplLocal.class
 com\in28minutes\rest\webservices\restfulwebservices\users\model\User.class
 com\in28minutes\rest\webservices\restfulwebservices\config\OptionsRequestMatcher.class
 com\in28minutes\rest\webservices\restfulwebservices\jwt\JwtAuthenticationController.class
