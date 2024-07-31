@@ -48,6 +48,7 @@ public class AppSecurityBasicConfig
         return
         http.authorizeHttpRequests(auth -> 
                                         auth
+                                        .requestMatchers("/").permitAll() //#CHANGE
                                         // Response to preflight request doesn't pass access control check
                                         .requestMatchers(new OptionsRequestMatcher("/**")).permitAll()
                                         .anyRequest().authenticated()) // Authenticate all requests

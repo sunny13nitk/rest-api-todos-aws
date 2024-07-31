@@ -66,6 +66,7 @@ public class JwtSecurityConfig
          */
         return httpSecurity
                 .authorizeHttpRequests(auth -> auth
+                                               .requestMatchers("/").permitAll() //#CHANGE
                                                .requestMatchers(new AntPathRequestMatcher("/authenticate")).permitAll()
                                                .requestMatchers(new AntPathRequestMatcher("/auth/addNewUser")).permitAll()
                                                //h2-console is a servlet and NOT recommended for a production
