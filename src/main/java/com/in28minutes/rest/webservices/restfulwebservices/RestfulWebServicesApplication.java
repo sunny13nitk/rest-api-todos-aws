@@ -22,7 +22,9 @@ public class RestfulWebServicesApplication
 		{
 			public void addCorsMappings(CorsRegistry registry)
 			{
-				registry.addMapping("/**").allowedMethods("*").allowedOrigins("http://localhost:3000");
+				registry.addMapping("/**").allowedMethods("*")
+						.allowedOrigins("http://todosappbucket.s3-website.ap-south-1.amazonaws.com");
+				// .allowedOrigins("http://localhost:3000");
 			}
 		};
 	}
